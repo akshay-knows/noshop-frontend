@@ -1,15 +1,87 @@
-<div class="p-6">
-  <div class="flex items-center justify-between mb-6">
-    <h1 class="text-2xl font-bold">Products</h1>
+<section>
+  <div class="flex flex-wrap items-center justify-between gap-3">
+    <div>
+      <h1 class="text-2xl font-semibold text-slate-900">Products</h1>
+      <p class="mt-1 text-sm text-slate-500">{{ totalElements }} products</p>
+    </div>
 
-    <button class="px-4 py-2 bg-black text-white rounded">
-      Add Product
-    </button>
+    <a routerLink="/admin/products/new" class="rounded-md bg-slate-900 px-4 py-2 text-sm font-medium text-white">Add product</a>
   </div>
 
-  <div class="border rounded-lg p-4">
-    <p class="text-gray-500">
-      Products will appear here.
-    </p>
+  <div class="mt-6 flex flex-wrap gap-2">
+    <input [(ngModel)]="searchQuery" (keyup.enter)="search()" placeholder="Search products..."
+      class="w-72 rounded-md border border-slate-300 px-3 py-2 text-sm outline-none focus:border-slate-500" />
+    <button (click)="search()" class="rounded-md border border-slate-300 bg-white px-4 py-2 text-sm">Search</button>
+
+    <select [(ngModel)]="statusFilter" (change)="filterChanged()"
+      class="rounded-md border border-slate-300 bg-white px-3 py-2 text-sm">
+      <option value="">All status</option>
+      <option value="ACTIVE">Active</option>
+      <option value="INACTIVE">Inactive</option>
+      <option value="DISCONTINUED">Discontinued</option>
+    </select>
   </div>
-</div>
+
+  @if (errorMessage) {
+    <div class="mt-4 rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">{{ errorMessage }}</div>
+  }
+
+  <div class="mt-5 overflow-hidden rounded-lg border border-slate-200 bg-white">
+    <div class="overflow-x-auto">
+      <table class="min-w-full text-sm">
+        <thead class="bg-slate-50 text-left text-slate-600">
+          <tr>
+            <th class="px-4 py-3 font-medium">Product</th>
+            <th class="px-4 py-3 font-medium">Brand</th>
+            <th class="px-4 py-3 font-medium">Category</th>
+            <th class="px-4 py-3 font-medium">Audience</th>
+            <th class="px-4 py-3 font-medium">Status</th>
+            <th class="px-4 py-3 font-medium">Actions</th>
+          </tr>
+        </thead>
+
+        <tbody class="divide-y divide-slate-100">
+          @if (loading) {
+            <tr><td colspan="6" class="px-4 py-8 text-center text-slate-500">Loading...</td></tr>
+          } @else if (products.length === 0) {
+            <tr><td colspan="6" class="px-4 py-8 text-center text-slate-500">No products found.</td></tr>
+          } @else {
+            @for (product of products; track product.id) {
+              <tr class="hover:bg-slate-50">
+                <td class="px-4 py-3">
+                  <div class="font-medium text-slate-900">{{ product.name }}</div>
+                  <div class="text-xs text-slate-500">{{ product.slug }}</div>
+                </td>
+                <td class="px-4 py-3 text-slate-600">{{ product.brandName }}</td>
+                <td class="px-4 py-3 text-slate-600">{{ product.categoryName }}</td>
+                <td class="px-4 py-3 text-slate-600">{{ product.audience }}</td>
+                <td class="px-4 py-3">
+                  <span class="rounded-full bg-slate-100 px-2 py-1 text-xs text-slate-700">{{ product.status }}</span>
+                </td>
+                <td class="px-4 py-3">
+                  <div class="flex gap-3">
+                    <a [routerLink]="['/admin/products', product.id, 'edit']" class="text-slate-700 hover:underline">Edit</a>
+                    <button (click)="toggleStatus(product)" class="text-slate-700 hover:underline">
+                      {{ product.status === 'ACTIVE' ? 'Deactivate' : 'Activate' }}
+                    </button>
+                    <button (click)="remove(product)" class="text-red-600 hover:underline">Delete</button>
+                  </div>
+                </td>
+              </tr>
+            }
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <div class="flex items-center justify-between border-t border-slate-200 px-4 py-3 text-sm">
+      <span class="text-slate-500">Page {{ page + 1 }} of {{ totalPages || 1 }}</span>
+      <div class="flex gap-2">
+        <button (click)="previousPage()" [disabled]="page === 0"
+          class="rounded-md border border-slate-300 px-3 py-1.5 disabled:opacity-40">Previous</button>
+        <button (click)="nextPage()" [disabled]="page + 1 >= totalPages"
+          class="rounded-md border border-slate-300 px-3 py-1.5 disabled:opacity-40">Next</button>
+      </div>
+    </div>
+  </div>
+</section>
