@@ -1,0 +1,25 @@
+<div class="min-h-screen bg-slate-50">
+  <header class="border-b border-slate-200 bg-white">
+    <div class="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
+      <div>
+        <div class="font-semibold text-slate-900">NoShop Admin</div>
+        <div class="text-xs text-slate-500">Product Catalog</div>
+      </div>
+      <button (click)="logout()" class="text-sm text-slate-600 hover:text-slate-900">Logout</button>
+    </div>
+  </header>
+
+  <div class="mx-auto flex max-w-7xl gap-6 px-6 py-6">
+    <aside class="h-fit w-48 shrink-0 rounded-lg border border-slate-200 bg-white p-3">
+      <a routerLink="/admin" routerLinkActive="font-medium bg-slate-100"
+         [routerLinkActiveOptions]="{ exact: true }"
+         class="block rounded-md px-3 py-2 text-sm text-slate-700">Dashboard</a>
+      <a routerLink="/admin/products" routerLinkActive="font-medium bg-slate-100"
+         class="mt-1 block rounded-md px-3 py-2 text-sm text-slate-700">Products</a>
+    </aside>
+
+    <main class="min-w-0 flex-1">
+      <router-outlet />
+    </main>
+  </div>
+</div>
