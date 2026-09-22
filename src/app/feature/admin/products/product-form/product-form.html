@@ -1,0 +1,85 @@
+<section class="max-w-3xl">
+  <div class="mb-6">
+    <a routerLink="/admin/products" class="text-sm text-slate-500 hover:text-slate-900">← Back to products</a>
+    <h1 class="mt-2 text-2xl font-semibold text-slate-900">{{ editId ? 'Edit product' : 'Create product' }}</h1>
+  </div>
+
+  @if (errorMessage) {
+    <div class="mb-4 rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">{{ errorMessage }}</div>
+  }
+
+  @if (loading) {
+    <div class="rounded-lg border border-slate-200 bg-white p-6 text-sm text-slate-500">Loading product...</div>
+  } @else {
+    <form [formGroup]="form" (ngSubmit)="submit()" class="space-y-5 rounded-lg border border-slate-200 bg-white p-6">
+      <div class="grid gap-5 sm:grid-cols-2">
+        <div class="sm:col-span-2">
+          <label class="block text-sm font-medium text-slate-700">Name</label>
+          <input formControlName="name" class="mt-1 w-full rounded-md border border-slate-300 px-3 py-2" />
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-slate-700">Slug</label>
+          <input formControlName="slug" class="mt-1 w-full rounded-md border border-slate-300 px-3 py-2" />
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-slate-700">Product type</label>
+          <input formControlName="productType" class="mt-1 w-full rounded-md border border-slate-300 px-3 py-2" />
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-slate-700">Brand</label>
+          <select formControlName="brandId" class="mt-1 w-full rounded-md border border-slate-300 bg-white px-3 py-2">
+            <option [ngValue]="0">Select brand</option>
+            @for (brand of brands; track brand.id) {
+              <option [ngValue]="brand.id">{{ brand.name }}</option>
+            }
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-slate-700">Category</label>
+          <select formControlName="categoryId" class="mt-1 w-full rounded-md border border-slate-300 bg-white px-3 py-2">
+            <option [ngValue]="0">Select category</option>
+            @for (category of categories; track category.id) {
+              <option [ngValue]="category.id">{{ category.name }}</option>
+            }
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-slate-700">Sub-category</label>
+          <select formControlName="subCategoryId" class="mt-1 w-full rounded-md border border-slate-300 bg-white px-3 py-2">
+            <option [ngValue]="0">Select sub-category</option>
+            @for (sub of visibleSubCategories; track sub.id) {
+              <option [ngValue]="sub.id">{{ sub.name }}</option>
+            }
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-slate-700">Catalog audience</label>
+          <select formControlName="audience" class="mt-1 w-full rounded-md border border-slate-300 bg-white px-3 py-2">
+            <option value="BOTH">Both</option>
+            <option value="B2C">B2C</option>
+            <option value="B2B">B2B</option>
+          </select>
+        </div>
+
+        <div class="sm:col-span-2">
+          <label class="block text-sm font-medium text-slate-700">Description</label>
+          <textarea formControlName="description" rows="4" class="mt-1 w-full rounded-md border border-slate-300 px-3 py-2"></textarea>
+        </div>
+      </div>
+
+      <div class="flex justify-end gap-3 border-t border-slate-100 pt-5">
+        <a routerLink="/admin/products" class="rounded-md border border-slate-300 px-4 py-2 text-sm">Cancel</a>
+        <button type="submit" [disabled]="saving"
+          class="rounded-md bg-slate-900 px-4 py-2 text-sm font-medium text-white disabled:opacity-60">
+          {{ saving ? 'Saving...' : (editId ? 'Update product' : 'Create product') }}
+        </button>
+      </div>
+    </form>
+  }
+</section>
