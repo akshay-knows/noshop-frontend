@@ -1,0 +1,71 @@
+<div class="min-h-screen bg-slate-50">
+  <header class="border-b border-slate-200 bg-white">
+    <div class="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
+      <div>
+        <div class="font-semibold text-slate-900">NoShop</div>
+        <div class="text-xs text-slate-500">Product Catalog</div>
+      </div>
+
+      <div class="flex items-center gap-4 text-sm">
+        @if (auth.isLoggedIn()) {
+          @if (auth.isAdmin()) {
+            <a routerLink="/admin" class="text-slate-700 hover:underline">Admin</a>
+          }
+          <button (click)="logout()" class="text-slate-700 hover:underline">Logout</button>
+        } @else {
+          <a routerLink="/login" class="text-slate-700 hover:underline">Login</a>
+        }
+      </div>
+    </div>
+  </header>
+
+  <main class="mx-auto max-w-7xl px-6 py-8">
+    <div class="flex flex-wrap items-end justify-between gap-4">
+      <div>
+        <h1 class="text-2xl font-semibold text-slate-900">Catalog</h1>
+        <p class="mt-1 text-sm text-slate-500">Products served by the NoShop backend.</p>
+      </div>
+
+      <div class="flex gap-2">
+        <input [(ngModel)]="searchQuery" (keyup.enter)="search()" placeholder="Search products..."
+          class="w-64 rounded-md border border-slate-300 bg-white px-3 py-2 text-sm" />
+        <button (click)="search()" class="rounded-md bg-slate-900 px-4 py-2 text-sm text-white">Search</button>
+      </div>
+    </div>
+
+    @if (errorMessage) {
+      <div class="mt-5 rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">{{ errorMessage }}</div>
+    }
+
+    <div class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+      @if (loading) {
+        <div class="col-span-full py-12 text-center text-sm text-slate-500">Loading catalog...</div>
+      } @else if (products.length === 0) {
+        <div class="col-span-full py-12 text-center text-sm text-slate-500">No products found.</div>
+      } @else {
+        @for (product of products; track product.id) {
+          <article class="rounded-lg border border-slate-200 bg-white p-4">
+            <div class="flex h-36 items-center justify-center rounded-md bg-slate-100 text-sm text-slate-400">
+              Image later
+            </div>
+            <div class="mt-4">
+              <div class="text-xs text-slate-500">{{ product.brandName }}</div>
+              <h2 class="mt-1 font-medium text-slate-900">{{ product.name }}</h2>
+              <p class="mt-1 text-sm text-slate-500">{{ product.categoryName }} · {{ product.subCategoryName }}</p>
+            </div>
+          </article>
+        }
+      }
+    </div>
+
+    <div class="mt-6 flex items-center justify-between text-sm">
+      <span class="text-slate-500">Page {{ page + 1 }} of {{ totalPages || 1 }}</span>
+      <div class="flex gap-2">
+        <button (click)="previousPage()" [disabled]="page === 0"
+          class="rounded-md border border-slate-300 bg-white px-3 py-1.5 disabled:opacity-40">Previous</button>
+        <button (click)="nextPage()" [disabled]="page + 1 >= totalPages"
+          class="rounded-md border border-slate-300 bg-white px-3 py-1.5 disabled:opacity-40">Next</button>
+      </div>
+    </div>
+  </main>
+</div>
